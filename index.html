@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+
+    <title>Envirocar Dashboard</title>
+
+</head>
+
+<body>
+<h1 align="center" style="color:blue;">EnviroCar Filter Dashboard</h1>
+        
+<div class = "border" align="center">
+
+    <h2><u>Script executer UI</u></h2><br>
+
+    <div class="innerContent" align="center" >
+    <br>
+    Lower limit </t> :   <input type="text" id = "lowerLimit" placeholder="Enter Upper limit "></input></t><br><br>         
+    Upper limit </t> :   <input type="text" id = "upperLimit" placeholder="Enter Lower limit "></input>
+    <br><br><br>
+    <button id = "exeBtn" onclick = "execute()" class = "button" >Execute</button>
+    <br><br><br>
+    </div>
+
+    <br><br>
+
+    <div id = "result">
+        
+        <h2><u>Query Results : </u></h2>
+
+        <div id="resultBox">
+            <h3 id = "queryResult"></h3>
+            <h3 id = "selectedDocuments"></h3>
+            <h3 id = "deleteResult"></h3>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function execute(){
+
+        queryResult.innerHTML = "";
+        selectedDocuments.innerHTML = "";
+        deleteResult.innerHTML = "";
+
+        lowerLimit = document.getElementById("lowerLimit").value;
+        upperLimit = document.getElementById("upperLimit").value;
+
+        var data = {};
+        data.lowerLimit = lowerLimit;
+        data.upperLimit = upperLimit;
+        
+        $.ajax({
+
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: 'http://localhost:8000/filterData',                      
+            success: function(data) {
+                
+                //console.log('success');
+                console.log(data)
+
+                queryResult = document.getElementById("queryResult");
+                selectedDocuments = document.getElementById("selectedDocuments");
+                deleteResult = document.getElementById("deleteResult");
+
+                queryText = document.createTextNode("Query Staus : " + data.result)
+                queryResult.appendChild(queryText);
+
+                selectedText = document.createTextNode("Number of documents selected : " + data.data.length)
+                selectedDocuments.appendChild(selectedText);
+
+                deleteText = document.createTextNode("Deletion Status : " + data.deleted);
+                deleteResult.appendChild(deleteText);
+             }
+
+        });
+
+    }
+
+</script>
+
+</body>
+
+</html>
